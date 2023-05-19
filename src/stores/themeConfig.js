@@ -78,7 +78,7 @@ export const useThemeConfig = defineStore('themeConfig', {
 			 * 界面显示
 			 */
 			// 是否开启侧边栏 Logo
-			isShowLogo: false,
+			isShowLogo: true,
 			// 初始化变量，用于 el-scrollbar 的高度更新，请勿删除
 			isShowLogoChange: false,
 			// 是否开启 Breadcrumb，强制经典、横向布局不显示
@@ -141,7 +141,7 @@ export const useThemeConfig = defineStore('themeConfig', {
 			// 网站副标题（登录页顶部文字）
 			globalViceTitle: 'Docker可视化平台',
 			// 网站副标题（登录页顶部文字）
-			globalViceTitleMsg: '专注、免费、开源、维护、解疑',
+			globalViceTitleMsg: '可视化工具',
 			// 默认初始语言，可选值"<zh-cn|en|zh-tw>"，默认 zh-cn
 			globalI18n: 'zh-cn',
 			// 默认全局组件大小，可选值"<large|'default'|small>"，默认 'large'

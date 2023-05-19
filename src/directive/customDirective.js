@@ -1,3 +1,4 @@
+import { ElLoading } from 'element-plus';
 /**
  * 按钮波浪指令
  * @directive 默认方式：v-waves，如 `<div v-waves></div>`
@@ -171,6 +172,31 @@ export function dragDirective(app) {
 					document.ontouchend = null;
 				};
 			};
+		},
+	});
+}
+
+export function loadingDirective(app) {
+	app.directive('loading', {
+		mounted(el, binding) {
+			// 根据绑定值决定是否显示 loading
+			const options = binding.value === true ? undefined : binding.value;
+			// 创建并保存 loading 实例和选项
+			const instance = ElLoading.service(options);
+			const directive = {
+				instance,
+				options,
+			};
+			el.dataset.directive = JSON.stringify(directive);
+		},
+		updated(el, binding) {
+			const directive = JSON.parse(el.dataset.directive || '{}');
+			directive.options = binding.value === true ? undefined : binding.value;
+			directive.instance.update(directive.options);
+		},
+		unmounted(el) {
+			const directive = JSON.parse(el.dataset.directive || '{}');
+			directive.instance.close();
 		},
 	});
 }

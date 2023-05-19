@@ -4,6 +4,7 @@ import { defineConfig, loadEnv } from 'vite';
 import vueSetupExtend from 'vite-plugin-vue-setup-extend-plus';
 import viteCompression from 'vite-plugin-compression';
 import { buildConfig } from './src/utils/build';
+import UnoCSS from 'unocss/vite'
 
 const pathResolve = (dir) => {
 	return resolve(__dirname, '.', dir);
@@ -16,7 +17,7 @@ const alias = {
 const viteConfig = defineConfig((mode) => {
 	const env = loadEnv(mode.mode, process.cwd());
 	return {
-		plugins: [vue(), vueSetupExtend(), viteCompression(), JSON.parse(env.VITE_OPEN_CDN) ? buildConfig.cdn() : null],
+		plugins: [vue(), UnoCSS(),vueSetupExtend(), viteCompression(), JSON.parse(env.VITE_OPEN_CDN) ? buildConfig.cdn() : null],
 		root: process.cwd(),
 		resolve: { alias },
 		base: mode.command === 'serve' ? './' : env.VITE_PUBLIC_PATH,
@@ -38,14 +39,14 @@ const viteConfig = defineConfig((mode) => {
 						'Access-Control-Allow-Origin': '*',
 					  },
 				},
-				'/api': {
-					target: env.VITE_API_URL,
-					ws: true,
-					changeOrigin: true,
-					headers: {
-						'Access-Control-Allow-Origin': '*',
-					},
-				},
+				// '/api': {
+				// 	target: env.VITE_API_URL,
+				// 	ws: true,
+				// 	changeOrigin: true,
+				// 	headers: {
+				// 		'Access-Control-Allow-Origin': '*',
+				// 	},
+				// },
 			},
 		},
 		build: {

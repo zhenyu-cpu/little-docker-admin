@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import Cookies from 'js-cookie';
 import { Session } from '/@/utils/storage';
+import {info} from '/@/api/auth'
 
 /**
  * 用户信息
@@ -30,38 +31,17 @@ export const useUserInfo = defineStore('userInfo', {
 		// https://gitee.com/lyt-top/vue-next-admin/issues/I5F1HP
 		async getApiUserInfo() {
 			return new Promise((resolve) => {
-				setTimeout(() => {
-					// 模拟数据，请求接口时，记得删除多余代码及对应依赖的引入
-					const userName = Cookies.get('userName');
-					// 模拟数据
-					let defaultRoles = [];
-					let defaultAuthBtnList = [];
-					// admin 页面权限标识，对应路由 meta.roles，用于控制路由的显示/隐藏
-					let adminRoles = ['admin'];
-					// admin 按钮权限标识
-					let adminAuthBtnList = ['btn.add', 'btn.del', 'btn.edit', 'btn.link'];
-					// test 页面权限标识，对应路由 meta.roles，用于控制路由的显示/隐藏
-					let testRoles = ['common'];
-					// test 按钮权限标识
-					let testAuthBtnList = ['btn.add', 'btn.link'];
-					// 不同用户模拟不同的用户权限
-					if (userName === 'admin') {
-						defaultRoles = adminRoles;
-						defaultAuthBtnList = adminAuthBtnList;
-					} else {
-						defaultRoles = testRoles;
-						defaultAuthBtnList = testAuthBtnList;
-					}
+				setTimeout(async () => {
+					const response = await info();
+					// 获取
+					const username = Cookies.get('username');
 					// 用户信息模拟数据
 					const userInfos = {
-						userName: userName,
-						photo:
-							userName === 'admin'
-								? 'https://img2.baidu.com/it/u=1978192862,2048448374&fm=253&fmt=auto&app=138&f=JPEG?w=504&h=500'
-								: 'https://img2.baidu.com/it/u=2370931438,70387529&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500',
+						username: response.data.username,
+						photo: response.data.avatarUrl,
 						time: new Date().getTime(),
-						roles: defaultRoles,
-						authBtnList: defaultAuthBtnList,
+						roles: response.data.roles ? response.data.roles : ['admin','common'],
+						authBtnList: [],
 					};
 					Session.set('userInfo', userInfos);
 					resolve(userInfos);

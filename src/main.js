@@ -4,7 +4,8 @@ import App from '/@/App.vue';
 import router from '/@/router';
 import { directive } from '/@/directive/index';
 import other from '/@/utils/other';
-
+import '@unocss/reset/tailwind.css'
+import 'virtual:uno.css'
 import ElementPlus from 'element-plus';
 import '/@/theme/index.scss';
 

@@ -20,16 +20,12 @@
 				<div class="login-right-warp-mian">
 					<div class="login-right-warp-main-title">{{ getThemeConfig.globalTitle }} 欢迎您！</div>
 					<div class="login-right-warp-main-form">
-						<div v-if="!state.isScan">
+						<div>
 							<el-tabs v-model="state.tabsActiveName">
 								<el-tab-pane label="账号密码登录" name="account">
 									<Account />
 								</el-tab-pane>
 							</el-tabs>
-						</div>
-						<div class="login-content-main-sacn" @click="state.isScan = !state.isScan">
-							<i class="iconfont" :class="state.isScan ? 'icon-diannao1' : 'icon-barcode-qr'"></i>
-							<div class="login-content-main-sacn-delta"></div>
 						</div>
 					</div>
 				</div>
@@ -55,7 +51,6 @@ const storesThemeConfig = useThemeConfig();
 const { themeConfig } = storeToRefs(storesThemeConfig);
 const state = reactive({
 	tabsActiveName: 'account',
-	isScan: false,
 });
 
 // 获取布局配置信息

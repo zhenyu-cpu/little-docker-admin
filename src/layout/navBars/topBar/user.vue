@@ -58,6 +58,7 @@ import { useUserInfo } from '/@/stores/userInfo';
 import { useThemeConfig } from '/@/stores/themeConfig';
 import mittBus from '/@/utils/mitt';
 import { Session, Local } from '/@/utils/storage';
+import {logout} from '/@/api/auth'
 
 const Search = defineAsyncComponent(() => import('/@/layout/navBars/topBar/search.vue'));
 
@@ -101,43 +102,50 @@ const onLayoutSetingClick = () => {
 	mittBus.emit('openSetingsDrawer');
 };
 // 下拉菜单点击时
-const onHandleCommandClick = (path) => {
-	if (path === 'logOut') {
-		ElMessageBox({
-			closeOnClickModal: false,
-			closeOnPressEscape: false,
-			title: '提示',
-			message: '此操作将退出登录, 是否继续?',
-			showCancelButton: true,
-			confirmButtonText: '确定',
-			cancelButtonText: '取消',
-			buttonSize: 'default',
-			beforeClose: (action, instance, done) => {
-				if (action === 'confirm') {
-					instance.confirmButtonLoading = true;
-					instance.confirmButtonText = '退出中';
-					setTimeout(() => {
-						done();
-						setTimeout(() => {
-							instance.confirmButtonLoading = false;
-						}, 300);
-					}, 700);
-				} else {
-					done();
-				}
-			},
-		})
-			.then(async () => {
-				// 清除缓存/token等
-				Session.clear();
-				// 使用 reload 时，不需要调用 resetRoute() 重置路由
-				window.location.reload();
-			})
-			.catch(() => {});
-	} else {
-		router.push(path);
-	}
+const logoutHandler = async () => {
+  const response = await logout();
+  return response;
 };
+
+const onHandleCommandClick = (path) => {
+  if (path === 'logOut') {
+    ElMessageBox({
+      closeOnClickModal: false,
+      closeOnPressEscape: false,
+      title: '提示',
+      message: '此操作将退出登录, 是否继续?',
+      showCancelButton: true,
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      buttonSize: 'default',
+      beforeClose: async (action, instance, done) => {
+        if (action === 'confirm') {
+          instance.confirmButtonLoading = true;
+          instance.confirmButtonText = '退出中';
+          const response = await logoutHandler();
+          instance.confirmButtonLoading = false;
+          if (response.success) {
+            done();
+          } else {
+            done(false);
+          }
+        } else {
+          done();
+        }
+      },
+    })
+      .then(() => {
+        // 清除缓存/token等
+        Session.clear();
+        // 使用 reload 时，不需要调用 resetRoute() 重置路由
+        window.location.reload();
+      })
+      .catch(() => {});
+  } else {
+    router.push(path);
+  }
+};
+
 // 菜单搜索点击
 const onSearchClick = () => {
 	searchRef.value.openSearch();
